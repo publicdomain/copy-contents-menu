@@ -28,7 +28,7 @@ namespace CopyContentsMenu
         private Icon associatedIcon = null;
 
         /// <summary>
-        /// The copy contents menu key listenfolder.
+        /// The copy contents menu key listcopyContents.
         /// </summary>
         private List<string> copyContentsMenuKeyList = new List<string> { @"Software\Classes\*\shell\Copy contents", @"Software\Classes\directory\shell\Copy contents" };
 
@@ -61,15 +61,15 @@ namespace CopyContentsMenu
         {
             try
             {
-                // Iterate enfolder registry keys 
-                foreach (var enfolderKey in this.copyContentsMenuKeyList)
+                // Iterate copyContents registry keys 
+                foreach (var copyContentsKey in this.copyContentsMenuKeyList)
                 {
-                    // Add enfolder command to registry
+                    // Add copyContents command to registry
                     RegistryKey registryKey;
-                    registryKey = Registry.CurrentUser.CreateSubKey(enfolderKey);
+                    registryKey = Registry.CurrentUser.CreateSubKey(copyContentsKey);
                     registryKey.SetValue("icon", Application.ExecutablePath);
                     registryKey.SetValue("position", "Bottom");
-                    registryKey = Registry.CurrentUser.CreateSubKey($"{enfolderKey}\\command");
+                    registryKey = Registry.CurrentUser.CreateSubKey($"{copyContentsKey}\\command");
                     registryKey.SetValue(string.Empty, $"{Path.Combine(Application.StartupPath, Application.ExecutablePath)} \"%1\"");
                     registryKey.Close();
                 }
@@ -94,7 +94,26 @@ namespace CopyContentsMenu
         /// <param name="e">Event arguments.</param>
         private void OnRemoveButtonClick(object sender, EventArgs e)
         {
+            try
+            {
+                // Iterate copyContents registry keys 
+                foreach (var copyContentsKey in this.copyContentsMenuKeyList)
+                {
+                    // Remove copyContents command to registry
+                    Registry.CurrentUser.DeleteSubKeyTree(copyContentsKey);
+                }
 
+                // Update the program by registry key
+                this.UpdateByRegistryKey();
+
+                // Notify user
+                MessageBox.Show("Copy contents context menu removed.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                // Notify user
+                MessageBox.Show($"Error when removing copy contents command from registry.{Environment.NewLine}{Environment.NewLine}Message:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
