@@ -33,9 +33,15 @@ namespace CopyContentsMenu
 
         }
 
+        /// <summary>
+        /// Handles the original thread donation codercom tool strip menu item click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
         private void OnOriginalThreadDonationCodercomToolStripMenuItemClick(object sender, EventArgs e)
         {
-
+            // Open original thread
+            Process.Start("https://www.donationcoder.com/forum/index.php?topic=52087.0");
         }
 
         /// <summary>
