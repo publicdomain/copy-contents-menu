@@ -28,9 +28,15 @@ namespace CopyContentsMenu
 
         }
 
+        /// <summary>
+        /// Handles the more releases public domain giftcom tool strip menu item click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
         private void OnFreeReleasesPublicDomainisToolStripMenuItemClick(object sender, EventArgs e)
         {
-
+            // Open our website
+            Process.Start("https://publicdomain.is");
         }
 
         /// <summary>
