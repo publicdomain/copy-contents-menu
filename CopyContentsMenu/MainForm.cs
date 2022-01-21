@@ -52,11 +52,46 @@ namespace CopyContentsMenu
             this.UpdateByRegistryKey();
         }
 
+        /// <summary>
+        /// Handles the add button click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
         private void OnAddButtonClick(object sender, EventArgs e)
         {
+            try
+            {
+                // Iterate enfolder registry keys 
+                foreach (var enfolderKey in this.copyContentsMenuKeyList)
+                {
+                    // Add enfolder command to registry
+                    RegistryKey registryKey;
+                    registryKey = Registry.CurrentUser.CreateSubKey(enfolderKey);
+                    registryKey.SetValue("icon", Application.ExecutablePath);
+                    registryKey.SetValue("position", "Bottom");
+                    registryKey = Registry.CurrentUser.CreateSubKey($"{enfolderKey}\\command");
+                    registryKey.SetValue(string.Empty, $"{Path.Combine(Application.StartupPath, Application.ExecutablePath)} \"%1\"");
+                    registryKey.Close();
+                }
 
+                // Update the program by registry key
+                this.UpdateByRegistryKey();
+
+                // Notify user
+                MessageBox.Show($"Copy contents context menu added!{Environment.NewLine}{Environment.NewLine}Right-click in Windows Explorer to use it.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                // Notify user
+                MessageBox.Show($"Error when adding copy contents context menu to registry.{Environment.NewLine}{Environment.NewLine}Message:{Environment.NewLine}{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
+        /// <summary>
+        /// Handles the remove button click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
         private void OnRemoveButtonClick(object sender, EventArgs e)
         {
 
